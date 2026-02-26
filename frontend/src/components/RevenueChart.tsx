@@ -39,7 +39,7 @@ export function RevenueChart({ entries }: Props) {
           <YAxis />
           <Tooltip formatter={(value) => `$${Number(value).toLocaleString()}`} />
           <Legend />
-          <Bar dataKey="revenue" fill="#737373" name="Revenue ($)" />
+          <Bar dataKey="revenue" fill="#10b981" name="Revenue ($)" />
         </BarChart>
       </ResponsiveContainer>
     </div>
