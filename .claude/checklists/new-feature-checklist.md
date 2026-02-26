@@ -11,11 +11,12 @@ Use this checklist when adding any new feature to the project.
 
 ## Backend Changes
 
-- [ ] Add/update types in `backend/src/types.ts`
-- [ ] Add/update store functions in `backend/src/store.ts` (if data changes needed)
-- [ ] Add/update route handlers in `backend/src/routes.ts`
-- [ ] Use explicit `Request`/`Response` types on all handlers
-- [ ] Validation returns error array (not just first error)
+- [ ] Add/update entity in `backend/src/analytics/entities/analytics.entity.ts`
+- [ ] Add/update DTOs in `backend/src/analytics/dto/` (use `class-validator` decorators)
+- [ ] Add/update service methods in `backend/src/analytics/service/analytics.service.ts`
+- [ ] Add/update controller methods in `backend/src/analytics/controller/analytics.controller.ts`
+- [ ] Use NestJS decorators: `@Controller`, `@Get`, `@Post`, `@Query`, `@Body`
+- [ ] Validation handled via DTOs + `ValidationPipe` (returns error array automatically)
 - [ ] Platform enum enforced: `"PC" | "Mobile" | "Console"`
 - [ ] Proper HTTP status codes (200, 201, 400, 404)
 

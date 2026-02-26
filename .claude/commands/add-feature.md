@@ -12,9 +12,11 @@ Add a new feature to the game-analytics-dashboard project: $ARGUMENTS
 Before writing any code:
 
 1. **Read the current codebase** — understand existing patterns by reading:
-   - `backend/src/types.ts` — shared data model
-   - `backend/src/routes.ts` — API route patterns
-   - `backend/src/store.ts` — data access layer
+   - `backend/src/analytics/entities/analytics.entity.ts` — data model / entity
+   - `backend/src/analytics/controller/analytics.controller.ts` — API controller with decorators
+   - `backend/src/analytics/service/analytics.service.ts` — business logic / data access
+   - `backend/src/analytics/dto/` — request/response DTOs with class-validator
+   - `backend/src/main.ts` — NestJS bootstrap
    - `frontend/src/types.ts` — frontend types
    - `frontend/src/hooks/useAnalytics.ts` — API communication pattern
    - `frontend/src/components/` — existing component structure
@@ -31,22 +33,38 @@ Follow these conventions exactly:
 
 | Concern | Location | Convention |
 |---------|----------|------------|
-| Types | `backend/src/types.ts` | Export interfaces, use PascalCase |
-| Routes | `backend/src/routes.ts` | Use explicit `Request`/`Response` types from express |
-| Data | `backend/src/store.ts` | Export pure functions, auto-increment string IDs |
-| Validation | Inside route handler | Collect errors in `string[]`, return all at once with 400 |
+| Entity | `backend/src/analytics/entities/analytics.entity.ts` | Export entity classes, use PascalCase |
+| Controller | `backend/src/analytics/controller/analytics.controller.ts` | Use `@Controller`, `@Get`, `@Post` decorators |
+| Service | `backend/src/analytics/service/analytics.service.ts` | `@Injectable` service, business logic & data access |
+| DTOs | `backend/src/analytics/dto/` | Use `class-validator` decorators for validation |
+| Bootstrap | `backend/src/main.ts` | NestJS app bootstrap with `ValidationPipe` |
 
 ```typescript
-// Route handler pattern:
-router.get('/endpoint', (req: Request, res: Response) => {
-  // ... logic
-  res.json(result);
-});
+// Controller pattern:
+@Controller('analytics')
+export class AnalyticsController {
+  constructor(private readonly analyticsService: AnalyticsService) {}
 
-// Validation pattern:
-const errors: string[] = [];
-if (!field) errors.push('field is required');
-if (errors.length > 0) return res.status(400).json({ errors });
+  @Get()
+  findAll(@Query() filterDto: FilterAnalyticsDto) {
+    return this.analyticsService.findAll(filterDto);
+  }
+
+  @Post()
+  create(@Body() createDto: CreateAnalyticsDto) {
+    return this.analyticsService.create(createDto);
+  }
+}
+
+// DTO validation pattern (class-validator):
+export class CreateAnalyticsDto {
+  @IsString()
+  @IsNotEmpty()
+  gameName: string;
+
+  @IsIn(['PC', 'Mobile', 'Console'])
+  platform: string;
+}
 ```
 
 Platform enum is strictly: `"PC" | "Mobile" | "Console"` — no other values.

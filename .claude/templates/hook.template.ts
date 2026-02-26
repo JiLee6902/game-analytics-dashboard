@@ -49,7 +49,7 @@ function useHookName() {
       });
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.errors?.join(', ') || 'Failed to create entry');
+        throw new Error(errorData.errors?.join(', ') || errorData.message?.join(', ') || 'Failed to create entry');
       }
       const newEntry = await response.json();
       setData(prev => [...prev, newEntry]);

@@ -33,15 +33,27 @@ import { useState } from 'react';
 import type { FC } from 'react';
 ```
 
-### Express Route Types (backend)
+### NestJS Controller Types (backend)
 ```typescript
-import { Request, Response } from 'express';
+import { Controller, Get, Post, Query, Body } from '@nestjs/common';
+import { AnalyticsService } from '../service/analytics.service';
+import { FilterAnalyticsDto } from '../dto/filter-analytics.dto';
+import { CreateAnalyticsDto } from '../dto/create-analytics.dto';
 
-router.get('/analytics', (req: Request, res: Response) => {
-  // req.query is Record<string, string | undefined>
-  const platform = req.query.platform as string | undefined;
-  res.json(data);
-});
+@Controller('analytics')
+export class AnalyticsController {
+  constructor(private readonly analyticsService: AnalyticsService) {}
+
+  @Get()
+  findAll(@Query() filterDto: FilterAnalyticsDto) {
+    return this.analyticsService.findAll(filterDto);
+  }
+
+  @Post()
+  create(@Body() createDto: CreateAnalyticsDto) {
+    return this.analyticsService.create(createDto);
+  }
+}
 ```
 
 ### Recharts Type Pattern (frontend)

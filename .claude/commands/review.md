@@ -27,14 +27,14 @@ Report any type errors immediately. If there are errors, still continue the revi
 Read every file in `backend/src/` and check:
 
 ### 2.1 Architecture & Structure
-- Server setup in `index.ts` or `server.ts` — proper CORS config, port binding, error handling
-- Route organization — clean separation of concerns
-- Store module — data integrity, ID generation safety
+- NestJS bootstrap in `main.ts` — proper CORS config, port binding, ValidationPipe setup
+- Module/Controller/Service organization — clean separation of concerns
+- Service layer — data integrity, ID generation safety
 
 ### 2.2 Type Safety
-- All route handlers use explicit `Request`/`Response` type annotations
+- All controller methods use proper NestJS decorators (`@Query`, `@Body`, `@Param`) with typed DTOs
 - No `any` types anywhere (strict mode)
-- Shared types in `types.ts` match frontend types exactly
+- Entities and DTOs in backend match frontend types
 - Response shapes are consistent (always JSON, proper status codes)
 
 ### 2.3 API Correctness
@@ -44,8 +44,8 @@ Read every file in `backend/src/` and check:
 - Platform validation uses strict enum: `"PC" | "Mobile" | "Console"`
 
 ### 2.4 Error Handling
-- Malformed JSON body handled gracefully (not 500)
-- Unknown routes return 404 (not default Express HTML)
+- Malformed JSON body handled gracefully via NestJS exception filters (not 500)
+- Unknown routes return 404 JSON response (NestJS default behavior)
 - No unhandled promise rejections
 
 ### 2.5 Security (even without auth)
@@ -87,7 +87,7 @@ Read every file in `frontend/src/` and check:
 ## Phase 4: Cross-Cutting Concerns
 
 ### 4.1 Type Consistency
-- Compare `backend/src/types.ts` with `frontend/src/types.ts` — fields must match exactly
+- Compare `backend/src/analytics/entities/analytics.entity.ts` and `backend/src/analytics/dto/` with `frontend/src/types.ts` — fields must match exactly
 - API response shapes match what frontend expects
 
 ### 4.2 Dead Code
